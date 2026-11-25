@@ -1,8 +1,19 @@
-// initialize vue 3 app instance
+const API_URL = 'https://backend-m01132399.onrender.com';
+
 const app = Vue.createApp({
   data() {
     return {
-      message: 'lessons'
+      apiUrl: API_URL,
+      lessons: [],
+      cart: [],
+      showCart: false,
+      sortAttribute: 'subject',
+      sortOrder: 'asc',
+      checkout: {
+        name: '',
+        phone: ''
+      },
+      orderSubmitted: false
     };
   }
 });
