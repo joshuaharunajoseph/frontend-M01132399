@@ -18,6 +18,10 @@ const app = Vue.createApp({
   },
 
   computed: {
+    cartItemCount() {
+      return this.cart.reduce((total, item) => total + item.quantity, 0);
+    },
+
     sortedLessons() {
       const lessonsCopy = [...this.lessons];
       const attr = this.sortAttribute;
@@ -36,6 +40,11 @@ const app = Vue.createApp({
   },
 
   methods: {
+    toggleCart() {
+      this.showCart = !this.showCart;
+      this.orderSubmitted = false;
+    },
+
     addToCart(lesson) {
       if (lesson.space > 0) {
         lesson.space--;
