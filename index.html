@@ -52,9 +52,9 @@
               <li><strong>Spaces:</strong> {{ lesson.space }}</li>
             </ul>
             <div class="lesson-footer">
-              <button class="btn" v-on:click="addToCart(lesson)">
+              <button class="btn" v-on:click="addToCart(lesson)" :disabled="lesson.space === 0">
                 <i class="fa-solid fa-cart-plus"></i>
-                <span>Add to Cart</span>
+                <span>{{ lesson.space > 0 ? 'Add to Cart' : 'Full' }}</span>
               </button>
             </div>
           </div>
