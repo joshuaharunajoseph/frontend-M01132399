@@ -22,6 +22,10 @@ const app = Vue.createApp({
       return this.cart.reduce((total, item) => total + item.quantity, 0);
     },
 
+    cartTotalPrice() {
+      return this.cart.reduce((total, item) => total + (item.lesson.price * item.quantity), 0);
+    },
+
     sortedLessons() {
       const lessonsCopy = [...this.lessons];
       const attr = this.sortAttribute;
@@ -43,6 +47,20 @@ const app = Vue.createApp({
     toggleCart() {
       this.showCart = !this.showCart;
       this.orderSubmitted = false;
+    },
+
+    removeFromCart(cartItem) {
+      const lesson = this.lessons.find(l => l._id === cartItem.lesson._id);
+      if (lesson) {
+        lesson.space += cartItem.quantity;
+      }
+      const index = this.cart.indexOf(cartItem);
+      if (index > -1) {
+        this.cart.splice(index, 1);
+      }
+      if (this.cart.length === 0) {
+        this.showCart = false;
+      }
     },
 
     addToCart(lesson) {
