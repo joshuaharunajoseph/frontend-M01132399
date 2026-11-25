@@ -16,6 +16,18 @@
     </header>
 
     <main class="container">
+      <div class="sort-section">
+        <div class="sort-group">
+          <span class="sort-label">Sort by:</span>
+          <div class="sort-options">
+            <label><input type="radio" value="subject" v-model="sortAttribute"> Subject</label>
+            <label><input type="radio" value="location" v-model="sortAttribute"> Location</label>
+            <label><input type="radio" value="price" v-model="sortAttribute"> Price</label>
+            <label><input type="radio" value="space" v-model="sortAttribute"> Spaces</label>
+          </div>
+        </div>
+      </div>
+
       <div class="lesson-grid">
         <div class="lesson-card" v-for="lesson in lessons" :key="lesson._id">
           <img class="lesson-card-image" :src="getImageUrl(lesson.image)" :alt="lesson.subject">
