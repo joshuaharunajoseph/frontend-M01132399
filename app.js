@@ -26,6 +26,18 @@ const app = Vue.createApp({
       return this.cart.reduce((total, item) => total + (item.lesson.price * item.quantity), 0);
     },
 
+    isNameValid() {
+      return /^[A-Za-z\s]+$/.test(this.checkout.name);
+    },
+
+    isPhoneValid() {
+      return /^[0-9]+$/.test(this.checkout.phone);
+    },
+
+    isCheckoutValid() {
+      return this.isNameValid && this.isPhoneValid && this.cart.length > 0;
+    },
+
     sortedLessons() {
       const lessonsCopy = [...this.lessons];
       const attr = this.sortAttribute;
