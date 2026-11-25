@@ -15,6 +15,12 @@ const app = Vue.createApp({
       },
       orderSubmitted: false
     };
+  },
+
+  methods: {
+    getImageUrl(imageName) {
+      return `${this.apiUrl}/images/${imageName}`;
+    }
   }
 });
 

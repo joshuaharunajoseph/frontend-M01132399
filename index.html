@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>lessons</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,7 +18,12 @@
     <main class="container">
       <div class="lesson-grid">
         <div class="lesson-card" v-for="lesson in lessons" :key="lesson._id">
+          <img class="lesson-card-image" :src="getImageUrl(lesson.image)" :alt="lesson.subject">
           <div class="lesson-card-body">
+            <div class="lesson-header">
+              <h3 class="lesson-subject">{{ lesson.subject }}</h3>
+              <i :class="lesson.icon + ' lesson-icon'"></i>
+            </div>
             <h3>{{ lesson.subject }}</h3>
             <ul class="lesson-details">
               <li><strong>Location:</strong> {{ lesson.location }}</li>
