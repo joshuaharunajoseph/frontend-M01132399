@@ -19,6 +19,11 @@
         <div class="lesson-card" v-for="lesson in lessons" :key="lesson._id">
           <div class="lesson-card-body">
             <h3>{{ lesson.subject }}</h3>
+            <ul class="lesson-details">
+              <li><strong>Location:</strong> {{ lesson.location }}</li>
+              <li><strong>Price:</strong> £{{ lesson.price }}</li>
+              <li><strong>Spaces:</strong> {{ lesson.space }}</li>
+            </ul>
           </div>
         </div>
       </div>
