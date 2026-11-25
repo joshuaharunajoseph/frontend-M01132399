@@ -38,7 +38,7 @@
       </div>
 
       <div class="lesson-grid">
-        <div class="lesson-card" v-for="lesson in lessons" :key="lesson._id">
+        <div class="lesson-card" v-for="lesson in sortedLessons" :key="lesson._id">
           <img class="lesson-card-image" :src="getImageUrl(lesson.image)" :alt="lesson.subject">
           <div class="lesson-card-body">
             <div class="lesson-header">

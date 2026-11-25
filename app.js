@@ -17,6 +17,24 @@ const app = Vue.createApp({
     };
   },
 
+  computed: {
+    sortedLessons() {
+      const lessonsCopy = [...this.lessons];
+      const attr = this.sortAttribute;
+      const order = this.sortOrder === 'asc' ? 1 : -1;
+
+      return lessonsCopy.sort((a, b) => {
+        let valA = a[attr];
+        let valB = b[attr];
+
+        if (typeof valA === 'string') {
+          return valA.localeCompare(valB) * order;
+        }
+        return (valA - valB) * order;
+      });
+    }
+  },
+
   methods: {
     getImageUrl(imageName) {
       return `${this.apiUrl}/images/${imageName}`;
