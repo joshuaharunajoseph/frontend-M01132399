@@ -26,6 +26,15 @@
             <label><input type="radio" value="space" v-model="sortAttribute"> Spaces</label>
           </div>
         </div>
+        </div>
+
+        <div class="sort-group">
+          <span class="sort-label">Order:</span>
+          <div class="sort-options">
+            <label><input type="radio" value="asc" v-model="sortOrder"> Ascending</label>
+            <label><input type="radio" value="desc" v-model="sortOrder"> Descending</label>
+          </div>
+        </div>
       </div>
 
       <div class="lesson-grid">
