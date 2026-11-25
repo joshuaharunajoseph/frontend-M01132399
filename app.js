@@ -36,6 +36,18 @@ const app = Vue.createApp({
   },
 
   methods: {
+    addToCart(lesson) {
+      if (lesson.space > 0) {
+        lesson.space--;
+        const cartItem = this.cart.find(item => item.lesson._id === lesson._id);
+        if (cartItem) {
+          cartItem.quantity++;
+        } else {
+          this.cart.push({ lesson: lesson, quantity: 1 });
+        }
+      }
+    },
+
     getImageUrl(imageName) {
       return `${this.apiUrl}/images/${imageName}`;
     }
