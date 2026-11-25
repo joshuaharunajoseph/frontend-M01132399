@@ -1,3 +1,4 @@
+// Backend API base URL
 const API_URL = 'https://backend-m01132399.onrender.com';
 
 const app = Vue.createApp({
@@ -18,26 +19,32 @@ const app = Vue.createApp({
   },
 
   computed: {
+    // calculate total item count in cart
     cartItemCount() {
       return this.cart.reduce((total, item) => total + item.quantity, 0);
     },
 
+    // calculate total price of cart items
     cartTotalPrice() {
       return this.cart.reduce((total, item) => total + (item.lesson.price * item.quantity), 0);
     },
 
+    // check if name contains letters and spaces only
     isNameValid() {
       return /^[A-Za-z\s]+$/.test(this.checkout.name);
     },
 
+    // check if phone contains numbers only
     isPhoneValid() {
       return /^[0-9]+$/.test(this.checkout.phone);
     },
 
+    // checkout button enabled only when inputs are valid and cart has items
     isCheckoutValid() {
       return this.isNameValid && this.isPhoneValid && this.cart.length > 0;
     },
 
+    // sort lessons by selected attribute and direction
     sortedLessons() {
       const lessonsCopy = [...this.lessons];
       const attr = this.sortAttribute;
@@ -56,25 +63,35 @@ const app = Vue.createApp({
   },
 
   methods: {
+    // toggle between lessons page and cart page
     toggleCart() {
       this.showCart = !this.showCart;
       this.orderSubmitted = false;
     },
 
-    removeFromCart(cartItem) {
-      const lesson = this.lessons.find(l => l._id === cartItem.lesson._id);
-      if (lesson) {
-        lesson.space += cartItem.quantity;
-      }
-      const index = this.cart.indexOf(cartItem);
-      if (index > -1) {
-        this.cart.splice(index, 1);
-      }
-      if (this.cart.length === 0) {
-        this.showCart = false;
-      }
+    // build image url served by backend static middleware
+    getImageUrl(imageName) {
+      return `${this.apiUrl}/images/${imageName}`;
     },
 
+    // fetch all lessons from backend API
+    fetchLessons() {
+      fetch(`${this.apiUrl}/lessons`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch lessons');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.lessons = data;
+        })
+        .catch(error => {
+          console.error('Error fetching lessons:', error);
+        });
+    },
+
+    // add lesson to cart and decrement available spaces
     addToCart(lesson) {
       if (lesson.space > 0) {
         lesson.space--;
@@ -87,9 +104,81 @@ const app = Vue.createApp({
       }
     },
 
-    getImageUrl(imageName) {
-      return `${this.apiUrl}/images/${imageName}`;
+    // remove lesson from cart and restore available spaces
+    removeFromCart(cartItem) {
+      const lesson = this.lessons.find(l => l._id === cartItem.lesson._id);
+      if (lesson) {
+        lesson.space += cartItem.quantity;
+      }
+
+      const index = this.cart.indexOf(cartItem);
+      if (index > -1) {
+        this.cart.splice(index, 1);
+      }
+
+      // switch back to lesson view if cart becomes empty
+      if (this.cart.length === 0) {
+        this.showCart = false;
+      }
+    },
+
+    // submit order to backend and update lesson spaces
+    submitOrder() {
+      if (!this.isCheckoutValid) return;
+
+      const lessonIDs = [];
+      let totalSpaces = 0;
+      this.cart.forEach(item => {
+        lessonIDs.push(item.lesson._id);
+        totalSpaces += item.quantity;
+      });
+
+      const orderData = {
+        name: this.checkout.name,
+        phone: this.checkout.phone,
+        lessonIDs: lessonIDs,
+        space: totalSpaces
+      };
+
+      // send POST request to save order
+      fetch(`${this.apiUrl}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to save order');
+          }
+          return response.json();
+        })
+        .then(() => {
+          // update available spaces for each lesson with PUT request
+          const updatePromises = this.cart.map(item => {
+            return fetch(`${this.apiUrl}/lessons/${item.lesson._id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ space: item.lesson.space })
+            });
+          });
+
+          return Promise.all(updatePromises);
+        })
+        .then(() => {
+          this.orderSubmitted = true;
+          this.cart = [];
+          this.checkout.name = '';
+          this.checkout.phone = '';
+        })
+        .catch(error => {
+          console.error('Error submitting order:', error);
+        });
     }
+  },
+
+  mounted() {
+    // load lessons on component mount
+    this.fetchLessons();
   }
 });
 
