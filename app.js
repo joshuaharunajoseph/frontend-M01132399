@@ -9,6 +9,7 @@ const app = Vue.createApp({
       teachers: [],
       selectedTeacher: '',
       searchQuery: '',
+      enrolments: {},
       cart: [],
       showCart: false,
       sortAttribute: 'subject',
@@ -94,6 +95,7 @@ const app = Vue.createApp({
         })
         .then(data => {
           this.lessons = data;
+          this.fetchEnrolments();
         })
         .catch(error => {
           console.error('Error fetching lessons:', error);
@@ -131,10 +133,25 @@ const app = Vue.createApp({
         })
         .then(data => {
           this.lessons = data;
+          this.fetchEnrolments();
         })
         .catch(error => {
           console.error('Error searching lessons:', error);
         });
+    },
+
+    // fetch enrolment count for each lesson
+    fetchEnrolments() {
+      this.lessons.forEach(lesson => {
+        fetch(`${this.apiUrl}/enrolment/${lesson._id}`)
+          .then(response => response.json())
+          .then(data => {
+            this.enrolments[lesson._id] = data.enrolment;
+          })
+          .catch(error => {
+            console.error('Error fetching enrolment:', error);
+          });
+      });
     },
 
     // add lesson to cart and decrement available spaces

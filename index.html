@@ -94,6 +94,7 @@
                 <li><strong>Price:</strong> £{{ lesson.price }}</li>
                 <li><strong>Spaces:</strong> {{ lesson.space }}</li>
                 <li><strong>Teacher:</strong> {{ lesson.teacher || 'Staff' }}</li>
+                <li><strong>Enrolled:</strong> {{ enrolments[lesson._id] !== undefined ? enrolments[lesson._id] : 0 }} slots</li>
               </ul>
               <div class="lesson-footer">
                 <button
