@@ -68,6 +68,16 @@
             </div>
           </div>
 
+          <!-- Teacher filter (Challenge: Teachers) -->
+          <div class="sort-group">
+            <span class="sort-label">Teacher:</span>
+            <select v-model="selectedTeacher" class="filter-select">
+              <option value="">All Teachers</option>
+              <option v-for="teacher in teachers" :key="teacher._id" :value="teacher.firstName + ' ' + teacher.lastName">
+                {{ teacher.firstName }} {{ teacher.lastName }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <!-- Lessons grid -->
@@ -83,6 +93,7 @@
                 <li><strong>Location:</strong> {{ lesson.location }}</li>
                 <li><strong>Price:</strong> £{{ lesson.price }}</li>
                 <li><strong>Spaces:</strong> {{ lesson.space }}</li>
+                <li><strong>Teacher:</strong> {{ lesson.teacher || 'Staff' }}</li>
               </ul>
               <div class="lesson-footer">
                 <button

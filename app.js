@@ -6,6 +6,8 @@ const app = Vue.createApp({
     return {
       apiUrl: API_URL,
       lessons: [],
+      teachers: [],
+      selectedTeacher: '',
       searchQuery: '',
       cart: [],
       showCart: false,
@@ -49,6 +51,11 @@ const app = Vue.createApp({
     sortedLessons() {
       let list = [...this.lessons];
 
+      // filter by selected teacher if any
+      if (this.selectedTeacher) {
+        list = list.filter(l => l.teacher === this.selectedTeacher);
+      }
+
       const attr = this.sortAttribute;
       const order = this.sortOrder === 'asc' ? 1 : -1;
 
@@ -90,6 +97,23 @@ const app = Vue.createApp({
         })
         .catch(error => {
           console.error('Error fetching lessons:', error);
+        });
+    },
+
+    // fetch all teachers from backend API
+    fetchTeachers() {
+      fetch(`${this.apiUrl}/teachers`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch teachers');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.teachers = data;
+        })
+        .catch(error => {
+          console.error('Error fetching teachers:', error);
         });
     },
 
@@ -202,6 +226,7 @@ const app = Vue.createApp({
   mounted() {
     // load lessons and teachers on mount
     this.fetchLessons();
+    this.fetchTeachers();
   }
 });
 
