@@ -6,6 +6,7 @@ const app = Vue.createApp({
     return {
       apiUrl: API_URL,
       lessons: [],
+      searchQuery: '',
       cart: [],
       showCart: false,
       sortAttribute: 'subject',
@@ -44,13 +45,14 @@ const app = Vue.createApp({
       return this.isNameValid && this.isPhoneValid && this.cart.length > 0;
     },
 
-    // sort lessons by selected attribute and direction
+    // sort and filter lessons by selected attribute and direction
     sortedLessons() {
-      const lessonsCopy = [...this.lessons];
+      let list = [...this.lessons];
+
       const attr = this.sortAttribute;
       const order = this.sortOrder === 'asc' ? 1 : -1;
 
-      return lessonsCopy.sort((a, b) => {
+      return list.sort((a, b) => {
         let valA = a[attr];
         let valB = b[attr];
 
@@ -88,6 +90,26 @@ const app = Vue.createApp({
         })
         .catch(error => {
           console.error('Error fetching lessons:', error);
+        });
+    },
+
+    // search lessons via backend REST API
+    searchLessons() {
+      const q = this.searchQuery.trim();
+      const url = q ? `${this.apiUrl}/search?q=${encodeURIComponent(q)}` : `${this.apiUrl}/lessons`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Search request failed');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.lessons = data;
+        })
+        .catch(error => {
+          console.error('Error searching lessons:', error);
         });
     },
 
@@ -169,6 +191,7 @@ const app = Vue.createApp({
           this.cart = [];
           this.checkout.name = '';
           this.checkout.phone = '';
+          this.fetchLessons();
         })
         .catch(error => {
           console.error('Error submitting order:', error);
@@ -177,7 +200,7 @@ const app = Vue.createApp({
   },
 
   mounted() {
-    // load lessons on component mount
+    // load lessons and teachers on mount
     this.fetchLessons();
   }
 });

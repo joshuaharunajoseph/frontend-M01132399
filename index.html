@@ -25,7 +25,18 @@
     <main class="container">
       <!-- Lessons list view -->
       <section v-if="!showCart">
-        <!-- Sorting options controls -->
+        <!-- Search bar (Challenge: backend search) -->
+        <div class="search-bar">
+          <input
+            type="text"
+            class="search-input"
+            v-model="searchQuery"
+            v-on:input="searchLessons"
+            placeholder="Search lessons (subject, location, price, spaces)..."
+          >
+        </div>
+
+        <!-- Sorting and filter controls -->
         <div class="sort-section">
           <div class="sort-group">
             <span class="sort-label">Sort by:</span>
@@ -56,6 +67,7 @@
               </label>
             </div>
           </div>
+
         </div>
 
         <!-- Lessons grid -->
